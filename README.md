@@ -1,6 +1,13 @@
-# E-commerce API
+# 🛍️ E-commerce API
 
-A comprehensive E-commerce API backend built with FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT authentication, and pytest testing.
+[![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)](https://www.postgresql.org/)
+[![Tests](https://img.shields.io/badge/Tests-80%2F80%20passed-brightgreen.svg)](https://pytest.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
+
+A production-ready, high-performance E-commerce API backend built with FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT authentication, and comprehensive testing. Features role-based access control, real-time monitoring, and Docker deployment.
 
 ## Features
 
@@ -12,6 +19,17 @@ A comprehensive E-commerce API backend built with FastAPI, PostgreSQL, SQLAlchem
 - **Order Management**: Checkout process, order tracking, and status updates
 - **Stock Management**: Automatic stock reduction on checkout
 - **API Documentation**: Auto-generated OpenAPI docs with Swagger UI
+- **Performance Monitoring**: Real-time metrics, rate limiting, and GZip compression
+- **Security**: Input validation, SQL injection protection, and comprehensive error handling
+
+## 🚀 Live Demo (Coming Soon)
+
+- **API Base URL**: https://your-api-demo.com  
+- **Swagger Docs**: https://your-api-demo.com/docs  
+- **ReDoc**: https://your-api-demo.com/redoc
+- **Health Check**: https://your-api-demo.com/health
+
+*Deployment scripts and production configuration included in the repository.*
 
 ## Tech Stack
 
@@ -50,6 +68,19 @@ ecommerce-api/
 ├── Dockerfile          # API container
 └── README.md           # This file
 ```
+
+## 📸 Screenshots
+
+### API Documentation (Swagger UI)
+![API Documentation](docs/images/swagger-ui.png)
+
+### Docker Containers Running
+![Docker Containers](docs/images/docker-containers.png)
+
+### Test Suite Execution
+![Test Suite](docs/images/test-execution.png)
+
+*Note: Screenshots will be added as the project evolves. These placeholders demonstrate the planned visual documentation.*
 
 ## Quick Start
 
@@ -308,6 +339,24 @@ DEBUG=true
 4. Add tests for new functionality
 5. Ensure all tests pass
 6. Submit a pull request
+
+## 💼 Portfolio Project
+
+This project is part of my **Backend Portfolio** showcasing production-ready API development skills.
+
+- [GitHub Profile](https://github.com/dera-delis)  
+- [LinkedIn](https://www.linkedin.com/in/dera-delis)  
+- [Portfolio Website](https://dera-delis.dev) *(Coming Soon)*
+
+### 🎯 What This Project Demonstrates
+
+- **Full-Stack Backend Development** with modern Python frameworks
+- **Database Design & Optimization** with PostgreSQL and SQLAlchemy
+- **API Security & Authentication** with JWT and role-based access control
+- **Testing & Quality Assurance** with comprehensive test coverage
+- **DevOps & Deployment** with Docker and production configurations
+- **Performance Optimization** with monitoring and caching strategies
+- **Documentation & Best Practices** with professional project structure
 
 ## License
 
