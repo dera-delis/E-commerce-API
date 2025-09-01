@@ -62,6 +62,16 @@ ecommerce-api/
 │       ├── cart.py      # Shopping cart operations
 │       └── orders.py    # Order management
 ├── tests/               # Test suite
+├── screenshots/         # Visual documentation
+│   ├── swagger-ui.png   # API documentation interface
+│   ├── redoc.png        # Alternative API documentation
+│   ├── docker-containers.png # Container deployment
+│   ├── database-schema.png   # Database structure
+│   ├── api-testing/     # API testing workflow
+│   │   ├── user-signup.png      # User registration
+│   │   ├── adding-product-to-cart.png # Cart operations
+│   │   └── checkout-order.png   # Order completion
+│   └── pytest.png            # Test suite execution
 ├── alembic/             # Database migrations
 ├── requirements.txt     # Python dependencies
 ├── docker-compose.yml   # Docker services
@@ -72,15 +82,26 @@ ecommerce-api/
 ## 📸 Screenshots
 
 ### API Documentation (Swagger UI)
-![API Documentation](docs/images/swagger-ui.png)
+![API Documentation](screenshots/swagger-ui.png)
+
+### API Documentation (ReDoc)
+![ReDoc Documentation](screenshots/redoc.png)
 
 ### Docker Containers Running
-![Docker Containers](docs/images/docker-containers.png)
+![Docker Containers](screenshots/docker-containers.png)
+
+### Database Schema
+![Database Schema](screenshots/database-schema.png)
+
+### API Testing Workflow
+![User Signup](screenshots/api-testing/user-signup.png)
+![Adding Product to Cart](screenshots/api-testing/adding-product-to-cart.png)
+![Checkout Order](screenshots/api-testing/checkout-order.png)
 
 ### Test Suite Execution
-![Test Suite](docs/images/test-execution.png)
+![Test Suite](screenshots/pytest.png)
 
-*Note: Screenshots will be added as the project evolves. These placeholders demonstrate the planned visual documentation.*
+*Note: Screenshots demonstrate the complete API workflow from user registration to order completion.*
 
 ## Quick Start
 

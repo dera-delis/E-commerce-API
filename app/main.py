@@ -91,11 +91,11 @@ async def rate_limit_middleware(request: Request, call_next):
     return response
 
 # Include routers
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(products.router, prefix="/products", tags=["Products"])
-app.include_router(categories.router, prefix="/categories", tags=["Categories"])
-app.include_router(cart.router, prefix="/cart", tags=["Cart"])
-app.include_router(orders.router, prefix="/orders", tags=["Orders"])
+app.include_router(auth.router, prefix="/auth")
+app.include_router(products.router, prefix="/products")
+app.include_router(categories.router, prefix="/categories")
+app.include_router(cart.router, prefix="/cart")
+app.include_router(orders.router, prefix="/orders")
 
 
 @app.get("/")

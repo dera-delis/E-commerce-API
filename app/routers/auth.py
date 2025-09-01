@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from .. import crud, schemas, auth
 from ..database import get_db
 
-router = APIRouter(tags=["authentication"])
+router = APIRouter()
 
 
 @router.post("/signup", response_model=schemas.User, status_code=status.HTTP_201_CREATED)

@@ -4,7 +4,7 @@ from typing import List
 from .. import crud, schemas, auth
 from ..database import get_db
 
-router = APIRouter(tags=["categories"])
+router = APIRouter()
 
 
 @router.get("/", response_model=List[schemas.Category])
