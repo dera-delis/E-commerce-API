@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Optional
+from typing import List, Union
+from pydantic import field_validator
 
 
 class Settings(BaseSettings):
@@ -12,11 +13,23 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     
     # CORS
-    allowed_origins: list = ["http://localhost:3000", "http://localhost:8000"]
+    allowed_origins: Union[str, List[str]] = ["http://localhost:3000", "http://localhost:8000"]
     
     # App
     app_name: str = "E-commerce API"
     debug: bool = True
+    
+    @field_validator('allowed_origins', mode='before')
+    @classmethod
+    def parse_allowed_origins(cls, v):
+        if isinstance(v, str):
+            if v == "*":
+                return ["*"]
+            elif "," in v:
+                return [origin.strip() for origin in v.split(",")]
+            else:
+                return [v]
+        return v
     
     model_config = SettingsConfigDict(env_file=".env")
 
