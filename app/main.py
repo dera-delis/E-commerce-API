@@ -26,40 +26,9 @@ app = FastAPI(
 async def startup_event():
     """Handle startup events"""
     try:
-        print("🚀 Running startup initialization...")
+        logger.info("🚀 E-commerce API starting up...")
         
-        # Check environment variables
-        import os
-        print(f"🌐 Environment check:")
-        print(f"   RENDER: {os.getenv('RENDER')}")
-        print(f"   DATABASE_URL: {os.getenv('DATABASE_URL', 'Not set')[:50]}...")
-        print(f"   DEBUG: {os.getenv('DEBUG')}")
-        
-        # Try to run migrations
-        try:
-            import subprocess
-            import sys
-            
-            print("📊 Attempting database migrations...")
-            result = subprocess.run([
-                sys.executable, "-m", "alembic", "upgrade", "head"
-            ], capture_output=True, text=True, cwd="/opt/render/project/src")
-            
-            print(f"Migration stdout: {result.stdout}")
-            print(f"Migration stderr: {result.stderr}")
-            print(f"Migration return code: {result.returncode}")
-            
-            if result.returncode == 0:
-                print("✅ Database migrations completed during startup")
-            else:
-                print(f"⚠️ Migration failed with return code {result.returncode}")
-                
-        except Exception as e:
-            print(f"⚠️ Migration startup error: {e}")
-            import traceback
-            traceback.print_exc()
-        
-        # Check database connection
+        # Simple database connection check
         from .database import check_db_connection
         
         if check_db_connection():
@@ -71,8 +40,6 @@ async def startup_event():
         
     except Exception as e:
         logger.error(f"❌ Startup error: {e}")
-        import traceback
-        traceback.print_exc()
         # Don't crash the app, just log the error
 
 # Add middleware for performance and security
@@ -216,6 +183,41 @@ async def database_check():
         return {
             "status": "error",
             "error": str(e),
+            "timestamp": time.time()
+        }
+
+
+@app.get("/migrate")
+async def run_migrations():
+    """Run database migrations manually"""
+    try:
+        import subprocess
+        import sys
+        
+        result = subprocess.run([
+            sys.executable, "-m", "alembic", "upgrade", "head"
+        ], capture_output=True, text=True, cwd="/opt/render/project/src")
+        
+        if result.returncode == 0:
+            return {
+                "status": "success",
+                "message": "Database migrations completed",
+                "stdout": result.stdout,
+                "timestamp": time.time()
+            }
+        else:
+            return {
+                "status": "error",
+                "message": "Migration failed",
+                "stderr": result.stderr,
+                "return_code": result.returncode,
+                "timestamp": time.time()
+            }
+            
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Migration error: {str(e)}",
             "timestamp": time.time()
         }
 
