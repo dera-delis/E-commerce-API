@@ -45,7 +45,26 @@ Base = declarative_base()
 def get_db():
     """Database dependency"""
     if not SessionLocal:
-        raise Exception("Database not available")
+        # Return a mock session that will fail gracefully
+        class MockSession:
+            def __init__(self):
+                pass
+            
+            def close(self):
+                pass
+                
+            def __enter__(self):
+                return self
+                
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                pass
+        
+        # Raise a proper HTTP exception instead of crashing
+        from fastapi import HTTPException
+        raise HTTPException(
+            status_code=503, 
+            detail="Database service unavailable. Please try again later."
+        )
     
     db = SessionLocal()
     try:
