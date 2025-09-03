@@ -22,6 +22,23 @@ app = FastAPI(
     debug=settings.debug
 )
 
+@app.on_event("startup")
+async def startup_event():
+    """Handle startup events"""
+    try:
+        from .database import check_db_connection
+        
+        if check_db_connection():
+            logger.info("✅ Database connection established")
+        else:
+            logger.warning("⚠️ Database connection failed - app will start but DB operations will fail")
+            
+        logger.info("🚀 E-commerce API started successfully")
+        
+    except Exception as e:
+        logger.error(f"❌ Startup error: {e}")
+        # Don't crash the app, just log the error
+
 # Add middleware for performance and security
 app.add_middleware(
     CORSMiddleware,
@@ -112,7 +129,25 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy"}
+    try:
+        from .database import check_db_connection
+        
+        db_status = check_db_connection()
+        
+        return {
+            "status": "healthy" if db_status else "degraded",
+            "database": "connected" if db_status else "disconnected",
+            "timestamp": time.time(),
+            "version": "1.0.0"
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": time.time(),
+            "version": "1.0.0"
+        }
 
 
 @app.get("/metrics")
