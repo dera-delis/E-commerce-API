@@ -54,7 +54,13 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)  # Compress responses > 1K
 # Security middleware
 app.add_middleware(
     TrustedHostMiddleware, 
-    allowed_hosts=["*"] if settings.debug else ["localhost", "127.0.0.1"]
+    allowed_hosts=["*"] if settings.debug else [
+        "localhost", 
+        "127.0.0.1",
+        ".onrender.com",  # Allow Render domains
+        ".render.com",    # Allow Render domains
+        "ecommerce-api-op5q.onrender.com"  # Your specific domain
+    ]
 )
 
 # Request timing middleware
@@ -113,6 +119,16 @@ app.include_router(products.router, prefix="/products")
 app.include_router(categories.router, prefix="/categories")
 app.include_router(cart.router, prefix="/cart")
 app.include_router(orders.router, prefix="/orders")
+
+
+@app.get("/test")
+async def test_endpoint():
+    """Simple test endpoint for debugging"""
+    return {
+        "status": "ok",
+        "message": "Test endpoint working",
+        "timestamp": time.time()
+    }
 
 
 @app.get("/")
