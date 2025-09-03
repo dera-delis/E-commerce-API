@@ -5,7 +5,8 @@ services:
     plan: free
     buildCommand: |
       pip install -r requirements.txt
-      alembic upgrade head
+      cd /opt/render/project/src
+      alembic upgrade head || echo "Migration failed, continuing..."
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION

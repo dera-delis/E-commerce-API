@@ -131,6 +131,59 @@ async def test_endpoint():
     }
 
 
+@app.get("/debug")
+async def debug_endpoint(request: Request):
+    """Debug endpoint to see request details"""
+    return {
+        "status": "debug",
+        "method": request.method,
+        "url": str(request.url),
+        "headers": dict(request.headers),
+        "client_host": request.client.host if request.client else "unknown",
+        "timestamp": time.time()
+    }
+
+
+@app.get("/db-check")
+async def database_check():
+    """Check database connection and tables"""
+    try:
+        from .database import check_db_connection, engine
+        from sqlalchemy import text
+        
+        # Check connection
+        db_connected = check_db_connection()
+        
+        # Check if tables exist
+        tables = []
+        if db_connected and engine:
+            try:
+                with engine.connect() as conn:
+                    result = conn.execute(text("""
+                        SELECT table_name 
+                        FROM information_schema.tables 
+                        WHERE table_schema = 'public'
+                        ORDER BY table_name
+                    """))
+                    tables = [row[0] for row in result]
+            except Exception as e:
+                tables = f"Error getting tables: {e}"
+        
+        return {
+            "status": "database_check",
+            "database_connected": db_connected,
+            "tables": tables,
+            "timestamp": time.time()
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "timestamp": time.time()
+        }
+
+
 @app.get("/")
 async def root():
     """Root endpoint"""
