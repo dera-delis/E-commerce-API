@@ -9,7 +9,7 @@
 
 A production-ready, high-performance E-commerce API backend built with FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT authentication, and comprehensive testing. Features role-based access control, real-time monitoring, and Docker deployment.
 
-> **🎯 Ready to explore?** [**Click here to try the live API**](https://ecommerce-api-op5q.onrender.com/docs) and see it in action!
+> **🎯 Ready to explore?** Try the API locally or check the [**Live Demo**](#-live-demo) section below!
 
 ## Features
 
@@ -34,7 +34,9 @@ A production-ready, high-performance E-commerce API backend built with FastAPI, 
 
 ## 🚀 Live Demo
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Click_Here-blue?style=for-the-badge&logo=fastapi)](https://ecommerce-api-op5q.onrender.com/docs)
+> **⚠️ Note:** The live demo may occasionally be unavailable due to free tier limitations. For the best experience, please run the API locally using the instructions below.
+
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Try_Here-blue?style=for-the-badge&logo=fastapi)](https://ecommerce-api-op5q.onrender.com/docs)
 
 [![API Documentation](https://img.shields.io/badge/📚_API_Docs-Swagger_UI-green?style=for-the-badge&logo=swagger)](https://ecommerce-api-op5q.onrender.com/docs)
 
@@ -43,10 +45,57 @@ A production-ready, high-performance E-commerce API backend built with FastAPI, 
 [![Health Check](https://img.shields.io/badge/💚_Health_Check-API_Status-brightgreen?style=for-the-badge&logo=healthchecks.io)](https://ecommerce-api-op5q.onrender.com/health)
 
 **Quick Links:**
-- 🔗 [API Base URL](https://ecommerce-api-op5q.onrender.com)
-- 📚 [Interactive Documentation](https://ecommerce-api-op5q.onrender.com/docs)
-- 📖 [Alternative Documentation](https://ecommerce-api-op5q.onrender.com/redoc)
-- 💚 [Health Status](https://ecommerce-api-op5q.onrender.com/health)
+- 🔗 [API Base URL](https://ecommerce-api-op5q.onrender.com) *(may be sleeping)*
+- 📚 [Interactive Documentation](https://ecommerce-api-op5q.onrender.com/docs) *(may be sleeping)*
+- 📖 [Alternative Documentation](https://ecommerce-api-op5q.onrender.com/redoc) *(may be sleeping)*
+- 💚 [Health Status](https://ecommerce-api-op5q.onrender.com/health) *(may be sleeping)*
+
+### 🏃‍♂️ **Quick Local Test** (Recommended)
+
+If the live demo is unavailable, you can test the API locally in under 2 minutes:
+
+```bash
+# Clone and start the API
+git clone https://github.com/dera-delis/E-commerce-API.git
+cd E-commerce-API
+docker-compose up -d
+
+# Test the API
+curl http://localhost:8000/health
+curl http://localhost:8000/docs  # Open in browser
+```
+
+### 🧪 **Quick API Test** (Working Examples)
+
+Test the API immediately with these working curl commands:
+
+```bash
+# 1. Health Check
+curl http://localhost:8000/health
+
+# 2. Get all products (no auth required)
+curl http://localhost:8000/api/v1/products/
+
+# 3. Register a new user
+curl -X POST "http://localhost:8000/api/v1/auth/signup" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "email": "test@example.com", 
+    "password": "password123"
+  }'
+
+# 4. Login and get token
+curl -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=testuser&password=password123"
+
+# 5. Add item to cart (replace YOUR_TOKEN with actual token)
+curl -X POST "http://localhost:8000/api/v1/cart/add" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"product_id": 1, "quantity": 2}'
+```
 
 *Deployment scripts and production configuration included in the repository.*
 
