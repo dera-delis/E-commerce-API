@@ -9,6 +9,8 @@
 
 A production-ready, high-performance E-commerce API backend built with FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT authentication, and comprehensive testing. Features role-based access control, real-time monitoring, and Docker deployment.
 
+> **🎯 Ready to explore?** [**Click here to try the live API**](https://ecommerce-api-op5q.onrender.com/docs) and see it in action!
+
 ## Features
 
 - **Authentication & Authorization**: JWT-based authentication with role-based access control (admin/customer)
@@ -24,10 +26,19 @@ A production-ready, high-performance E-commerce API backend built with FastAPI, 
 
 ## 🚀 Live Demo
 
-- **API Base URL**: https://ecommerce-api-op5q.onrender.com  
-- **Swagger Docs**: https://ecommerce-api-op5q.onrender.com/docs  
-- **ReDoc**: https://ecommerce-api-op5q.onrender.com/redoc
-- **Health Check**: https://ecommerce-api-op5q.onrender.com/health
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Click_Here-blue?style=for-the-badge&logo=fastapi)](https://ecommerce-api-op5q.onrender.com/docs)
+
+[![API Documentation](https://img.shields.io/badge/📚_API_Docs-Swagger_UI-green?style=for-the-badge&logo=swagger)](https://ecommerce-api-op5q.onrender.com/docs)
+
+[![Alternative Docs](https://img.shields.io/badge/📖_ReDoc-View_Docs-orange?style=for-the-badge&logo=readthedocs)](https://ecommerce-api-op5q.onrender.com/redoc)
+
+[![Health Check](https://img.shields.io/badge/💚_Health_Check-API_Status-brightgreen?style=for-the-badge&logo=healthchecks.io)](https://ecommerce-api-op5q.onrender.com/health)
+
+**Quick Links:**
+- 🔗 [API Base URL](https://ecommerce-api-op5q.onrender.com)
+- 📚 [Interactive Documentation](https://ecommerce-api-op5q.onrender.com/docs)
+- 📖 [Alternative Documentation](https://ecommerce-api-op5q.onrender.com/redoc)
+- 💚 [Health Status](https://ecommerce-api-op5q.onrender.com/health)
 
 *Deployment scripts and production configuration included in the repository.*
 
@@ -219,8 +230,10 @@ ecommerce-api/
 
 ### 1. User Registration and Login
 
+> **💡 Try it live!** Use the [Interactive Documentation](https://ecommerce-api-op5q.onrender.com/docs) to test these endpoints directly in your browser.
+
 ```bash
-# Register a new user (Local)
+# Register a new user (Local Development)
 curl -X POST "http://localhost:8000/auth/signup" \
   -H "Content-Type: application/json" \
   -d '{
@@ -238,7 +251,7 @@ curl -X POST "https://ecommerce-api-op5q.onrender.com/auth/signup" \
     "password": "securepassword123"
   }'
 
-# Login (Local)
+# Login (Local Development)
 curl -X POST "http://localhost:8000/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=john_doe&password=securepassword123"
