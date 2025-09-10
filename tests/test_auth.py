@@ -10,7 +10,7 @@ class TestAuth:
     
     def test_signup_success(self, client: TestClient, db: Session):
         """Test successful user signup"""
-        response = client.post("/auth/signup", json={
+        response = client.post("/api/v1/auth/signup", json={
             "username": "newuser",
             "email": "newuser@example.com",
             "password": "password123"
@@ -32,7 +32,7 @@ class TestAuth:
         })
         
         # Second signup with same username
-        response = client.post("/auth/signup", json={
+        response = client.post("/api/v1/auth/signup", json={
             "username": "duplicate",
             "email": "second@example.com",
             "password": "password123"
@@ -49,7 +49,7 @@ class TestAuth:
         })
         
         # Second signup with same email
-        response = client.post("/auth/signup", json={
+        response = client.post("/api/v1/auth/signup", json={
             "username": "second",
             "email": "duplicate@example.com",
             "password": "password123"
@@ -66,7 +66,7 @@ class TestAuth:
         })
         
         # Then login
-        response = client.post("/auth/login", data={
+        response = client.post("/api/v1/auth/login", data={
             "username": "loginuser",
             "password": "password123"
         })
@@ -77,7 +77,7 @@ class TestAuth:
 
     def test_login_invalid_username(self, client: TestClient, db: Session):
         """Test login with invalid username"""
-        response = client.post("/auth/login", data={
+        response = client.post("/api/v1/auth/login", data={
             "username": "nonexistent",
             "password": "password123"
         })
@@ -93,7 +93,7 @@ class TestAuth:
         })
         
         # Then login with wrong password
-        response = client.post("/auth/login", data={
+        response = client.post("/api/v1/auth/login", data={
             "username": "passworduser",
             "password": "wrongpassword"
         })
@@ -102,7 +102,7 @@ class TestAuth:
     def test_get_current_user_success(self, client: TestClient, test_user_token: str):
         """Test getting current user with valid token"""
         headers = {"Authorization": f"Bearer {test_user_token}"}
-        response = client.get("/auth/me", headers=headers)
+        response = client.get("/api/v1/auth/me", headers=headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["username"] == "testuser"
@@ -111,7 +111,7 @@ class TestAuth:
     def test_get_current_user_invalid_token(self, client: TestClient):
         """Test getting current user with invalid token"""
         headers = {"Authorization": "Bearer invalid_token"}
-        response = client.get("/auth/me", headers=headers)
+        response = client.get("/api/v1/auth/me", headers=headers)
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_get_current_user_no_token(self, client: TestClient):

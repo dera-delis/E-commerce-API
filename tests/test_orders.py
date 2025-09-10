@@ -17,7 +17,7 @@ class TestOrders:
         client.post("/cart/add", json=cart_data, headers=headers)
         
         # Then checkout
-        response = client.post("/orders/checkout", headers=headers)
+        response = client.post("/api/v1/orders/checkout", headers=headers)
         assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
         assert data["status"] == "pending"
@@ -26,7 +26,7 @@ class TestOrders:
     def test_checkout_empty_cart(self, client: TestClient, test_user_token: str, db: Session):
         """Test checkout with empty cart"""
         headers = {"Authorization": f"Bearer {test_user_token}"}
-        response = client.post("/orders/checkout", headers=headers)
+        response = client.post("/api/v1/orders/checkout", headers=headers)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_checkout_admin_forbidden(self, client: TestClient, test_admin_token: str, test_product: Product):
@@ -38,7 +38,7 @@ class TestOrders:
         client.post("/cart/add", json=cart_data, headers=headers)
         
         # Try to checkout
-        response = client.post("/orders/checkout", headers=headers)
+        response = client.post("/api/v1/orders/checkout", headers=headers)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_checkout_insufficient_stock(self, client: TestClient, test_user_token: str, test_product: Product):
@@ -51,7 +51,7 @@ class TestOrders:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         
         # Then try to checkout (should fail due to empty cart)
-        response = client.post("/orders/checkout", headers=headers)
+        response = client.post("/api/v1/orders/checkout", headers=headers)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_checkout_stock_reduction(self, client: TestClient, test_user_token: str, test_product: Product, db: Session):
@@ -64,7 +64,7 @@ class TestOrders:
         client.post("/cart/add", json=cart_data, headers=headers)
         
         # Checkout
-        response = client.post("/orders/checkout", headers=headers)
+        response = client.post("/api/v1/orders/checkout", headers=headers)
         assert response.status_code == status.HTTP_201_CREATED
         
         # Verify stock is reduced
@@ -84,7 +84,7 @@ class TestOrders:
         assert len(cart_response.json()) > 0
         
         # Checkout
-        response = client.post("/orders/checkout", headers=headers)
+        response = client.post("/api/v1/orders/checkout", headers=headers)
         assert response.status_code == status.HTTP_201_CREATED
         
         # Verify cart is cleared
@@ -98,10 +98,10 @@ class TestOrders:
         # First create an order
         cart_data = {"product_id": test_product.id, "quantity": 1}
         client.post("/cart/add", json=cart_data, headers=headers)
-        client.post("/orders/checkout", headers=headers)
+        client.post("/api/v1/orders/checkout", headers=headers)
         
         # Then get orders
-        response = client.get("/orders/", headers=headers)
+        response = client.get("/api/v1/orders/", headers=headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert isinstance(data, list)
@@ -113,11 +113,11 @@ class TestOrders:
         user_headers = {"Authorization": f"Bearer {test_user_token}"}
         cart_data = {"product_id": test_product.id, "quantity": 1}
         client.post("/cart/add", json=cart_data, headers=user_headers)
-        client.post("/orders/checkout", headers=user_headers)
+        client.post("/api/v1/orders/checkout", headers=user_headers)
         
         # Admin gets all orders
         admin_headers = {"Authorization": f"Bearer {test_admin_token}"}
-        response = client.get("/orders/all", headers=admin_headers)
+        response = client.get("/api/v1/orders/all", headers=admin_headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert isinstance(data, list)
@@ -130,7 +130,7 @@ class TestOrders:
         # Create an order
         cart_data = {"product_id": test_product.id, "quantity": 1}
         client.post("/cart/add", json=cart_data, headers=headers)
-        checkout_response = client.post("/orders/checkout", headers=headers)
+        checkout_response = client.post("/api/v1/orders/checkout", headers=headers)
         order_id = checkout_response.json()["id"]
         
         # Get order by ID
@@ -145,7 +145,7 @@ class TestOrders:
         user_headers = {"Authorization": f"Bearer {test_user_token}"}
         cart_data = {"product_id": test_product.id, "quantity": 1}
         client.post("/cart/add", json=cart_data, headers=user_headers)
-        checkout_response = client.post("/orders/checkout", headers=user_headers)
+        checkout_response = client.post("/api/v1/orders/checkout", headers=user_headers)
         order_id = checkout_response.json()["id"]
         
         # Admin gets the order
@@ -162,7 +162,7 @@ class TestOrders:
         # Create an order
         cart_data = {"product_id": test_product.id, "quantity": 1}
         client.post("/cart/add", json=cart_data, headers=headers)
-        checkout_response = client.post("/orders/checkout", headers=headers)
+        checkout_response = client.post("/api/v1/orders/checkout", headers=headers)
         order_id = checkout_response.json()["id"]
         
         # Try to get order without token
@@ -175,7 +175,7 @@ class TestOrders:
         user_headers = {"Authorization": f"Bearer {test_user_token}"}
         cart_data = {"product_id": test_product.id, "quantity": 1}
         client.post("/cart/add", json=cart_data, headers=user_headers)
-        checkout_response = client.post("/orders/checkout", headers=user_headers)
+        checkout_response = client.post("/api/v1/orders/checkout", headers=user_headers)
         order_id = checkout_response.json()["id"]
         
         # Admin updates status
@@ -193,7 +193,7 @@ class TestOrders:
         # Create an order
         cart_data = {"product_id": test_product.id, "quantity": 1}
         client.post("/cart/add", json=cart_data, headers=headers)
-        checkout_response = client.post("/orders/checkout", headers=headers)
+        checkout_response = client.post("/api/v1/orders/checkout", headers=headers)
         order_id = checkout_response.json()["id"]
         
         # Try to update status
@@ -210,5 +210,5 @@ class TestOrders:
 
     def test_orders_unauthorized(self, client: TestClient):
         """Test orders access without authentication"""
-        response = client.get("/orders/")
+        response = client.get("/api/v1/orders/")
         assert response.status_code == status.HTTP_403_FORBIDDEN

@@ -24,7 +24,7 @@ class TestEdgeCases:
     def test_invalid_token_format(self, client: TestClient):
         """Test API behavior with invalid token format"""
         headers = {"Authorization": "Bearer invalid_token_format"}
-        response = client.get("/auth/me", headers=headers)
+        response = client.get("/api/v1/auth/me", headers=headers)
         assert response.status_code == 401
     
     def test_expired_token(self, client: TestClient):
@@ -32,14 +32,14 @@ class TestEdgeCases:
         # This would require a token that's actually expired
         # For now, just test that invalid tokens are rejected
         headers = {"Authorization": "Bearer expired_token_here"}
-        response = client.get("/auth/me", headers=headers)
+        response = client.get("/api/v1/auth/me", headers=headers)
         assert response.status_code == 401
     
     def test_malformed_json(self, client: TestClient):
         """Test API behavior with malformed JSON"""
         headers = {"Content-Type": "application/json"}
         response = client.post(
-            "/auth/signup",
+            "/api/v1/auth/signup",
             content="invalid json content",
             headers=headers
         )
@@ -49,7 +49,7 @@ class TestEdgeCases:
         """Test API behavior with very long input strings"""
         long_string = "x" * 10000  # Very long string
         
-        response = client.post("/auth/signup", json={
+        response = client.post("/api/v1/auth/signup", json={
             "username": long_string,
             "email": f"{long_string}@example.com",
             "password": "password123"
@@ -62,7 +62,7 @@ class TestEdgeCases:
         """Test API behavior with special characters"""
         special_chars = "!@#$%^&*()_+-=[]{}|;':\",./<>?"
         
-        response = client.post("/auth/signup", json={
+        response = client.post("/api/v1/auth/signup", json={
             "username": f"user{special_chars}",
             "email": f"user{special_chars}@example.com",
             "password": "password123"
@@ -75,7 +75,7 @@ class TestEdgeCases:
         """Test API behavior with unicode characters"""
         unicode_string = "café résumé naïve"
         
-        response = client.post("/auth/signup", json={
+        response = client.post("/api/v1/auth/signup", json={
             "username": f"user{unicode_string}",
             "email": f"user{unicode_string}@example.com",
             "password": "password123"
@@ -89,7 +89,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         
         # Test negative price
-        response = client.post("/products/", json={
+        response = client.post("/api/v1/products/", json={
             "name": "Test Product",
             "description": "Test Description",
             "price": -10.0,
@@ -105,7 +105,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         
         # Test zero price
-        response = client.post("/products/", json={
+        response = client.post("/api/v1/products/", json={
             "name": "Test Product",
             "description": "Test Description",
             "price": 0.0,
@@ -121,7 +121,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         
         # Test very large price
-        response = client.post("/products/", json={
+        response = client.post("/api/v1/products/", json={
             "name": "Test Product",
             "description": "Test Description",
             "price": 1e20,  # Very large number
@@ -137,7 +137,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         
         # Test empty name
-        response = client.post("/products/", json={
+        response = client.post("/api/v1/products/", json={
             "name": "",
             "description": "Test Description",
             "price": 10.0,
@@ -153,7 +153,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         
         # Test whitespace-only name
-        response = client.post("/products/", json={
+        response = client.post("/api/v1/products/", json={
             "name": "   ",
             "description": "Test Description",
             "price": 10.0,
@@ -178,7 +178,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         xss_script = "<script>alert('xss')</script>"
         
-        response = client.post("/products/", json={
+        response = client.post("/api/v1/products/", json={
             "name": xss_script,
             "description": xss_script,
             "price": 10.0,
@@ -195,7 +195,7 @@ class TestEdgeCases:
         
         def create_user():
             try:
-                response = client.post("/auth/signup", json={
+                response = client.post("/api/v1/auth/signup", json={
                     "username": "concurrent_user",
                     "email": f"user{time.time()}@example.com",
                     "password": "password123"
@@ -233,10 +233,10 @@ class TestEdgeCases:
         }
         
         # Create first product
-        client.post("/products/", json=product_data, headers=headers)
+        client.post("/api/v1/products/", json=product_data, headers=headers)
         
         # Try to create duplicate
-        response = client.post("/products/", json=product_data, headers=headers)
+        response = client.post("/api/v1/products/", json=product_data, headers=headers)
         
         # Should reject duplicate name
         assert response.status_code == 400
@@ -246,7 +246,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         
         # Missing name field
-        response = client.post("/products/", json={
+        response = client.post("/api/v1/products/", json={
             "description": "Test Description",
             "price": 10.0,
             "stock": 100,
@@ -261,7 +261,7 @@ class TestEdgeCases:
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         
         # Try to create user with invalid role
-        response = client.post("/auth/signup", json={
+        response = client.post("/api/v1/auth/signup", json={
             "username": "testuser",
             "email": "test@example.com",
             "password": "password123",

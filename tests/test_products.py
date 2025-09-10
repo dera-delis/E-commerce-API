@@ -10,7 +10,7 @@ class TestProducts:
     
     def test_get_products_public(self, client: TestClient, db: Session):
         """Test public access to products list"""
-        response = client.get("/products/")
+        response = client.get("/api/v1/products/")
         assert response.status_code == status.HTTP_200_OK
         assert isinstance(response.json(), list)
 
@@ -37,7 +37,7 @@ class TestProducts:
             "stock": 50,
             "category_id": test_category.id
         }
-        response = client.post("/products/", json=product_data, headers=headers)
+        response = client.post("/api/v1/products/", json=product_data, headers=headers)
         assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
         assert data["name"] == product_data["name"]
@@ -53,7 +53,7 @@ class TestProducts:
             "stock": 10,
             "category_id": test_category.id
         }
-        response = client.post("/products/", json=product_data, headers=headers)
+        response = client.post("/api/v1/products/", json=product_data, headers=headers)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_create_product_no_auth(self, client: TestClient, test_category: Category):
@@ -65,7 +65,7 @@ class TestProducts:
             "stock": 25,
             "category_id": test_category.id
         }
-        response = client.post("/products/", json=product_data)
+        response = client.post("/api/v1/products/", json=product_data)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_create_product_invalid_category(self, client: TestClient, test_admin_token: str):
@@ -78,7 +78,7 @@ class TestProducts:
             "stock": 15,
             "category_id": 99999  # Non-existent category
         }
-        response = client.post("/products/", json=product_data, headers=headers)
+        response = client.post("/api/v1/products/", json=product_data, headers=headers)
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_create_product_duplicate_name(self, client: TestClient, test_admin_token: str, test_product: Product, test_category: Category):
@@ -91,7 +91,7 @@ class TestProducts:
             "stock": 20,
             "category_id": test_category.id
         }
-        response = client.post("/products/", json=product_data, headers=headers)
+        response = client.post("/api/v1/products/", json=product_data, headers=headers)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_update_product_admin_success(self, client: TestClient, test_admin_token: str, test_product: Product):

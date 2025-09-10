@@ -138,7 +138,7 @@ class TestPerformance:
         # Make many database queries to test connection pooling
         responses = []
         for _ in range(20):
-            response = client.get("/products/")
+            response = client.get("/api/v1/products/")
             responses.append(response.status_code)
         
         # All should succeed

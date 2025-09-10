@@ -102,7 +102,7 @@ def test_product(db, test_category):
 @pytest.fixture
 def test_user_token(client, test_user):
     """Get authentication token for test user"""
-    response = client.post("/auth/login", data={
+    response = client.post("/api/v1/auth/login", data={
         "username": "testuser",
         "password": "password123"
     })
@@ -111,7 +111,7 @@ def test_user_token(client, test_user):
 @pytest.fixture
 def test_admin_token(client, test_admin_user):
     """Get authentication token for test admin"""
-    response = client.post("/auth/login", data={
+    response = client.post("/api/v1/auth/login", data={
         "username": "admin",
         "password": "admin123"
     })

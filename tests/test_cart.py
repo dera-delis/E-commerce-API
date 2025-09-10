@@ -15,7 +15,7 @@ class TestCart:
             "product_id": test_product.id,
             "quantity": 2
         }
-        response = client.post("/cart/add", json=cart_data, headers=headers)
+        response = client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
         assert data["product_id"] == test_product.id
@@ -30,10 +30,10 @@ class TestCart:
         }
         
         # Add first time
-        client.post("/cart/add", json=cart_data, headers=headers)
+        client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         
         # Add second time (should update quantity)
-        response = client.post("/cart/add", json=cart_data, headers=headers)
+        response = client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         assert response.status_code == status.HTTP_201_CREATED
 
     def test_add_to_cart_product_not_found(self, client: TestClient, test_user_token: str, db: Session):
@@ -43,7 +43,7 @@ class TestCart:
             "product_id": 99999,
             "quantity": 1
         }
-        response = client.post("/cart/add", json=cart_data, headers=headers)
+        response = client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_add_to_cart_insufficient_stock(self, client: TestClient, test_user_token: str, test_product: Product):
@@ -53,7 +53,7 @@ class TestCart:
             "product_id": test_product.id,
             "quantity": test_product.stock + 1  # More than available stock
         }
-        response = client.post("/cart/add", json=cart_data, headers=headers)
+        response = client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_get_cart_items(self, client: TestClient, test_user_token: str, test_product: Product):
@@ -62,10 +62,10 @@ class TestCart:
         
         # First add an item
         cart_data = {"product_id": test_product.id, "quantity": 1}
-        client.post("/cart/add", json=cart_data, headers=headers)
+        client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         
         # Then get cart items
-        response = client.get("/cart/", headers=headers)
+        response = client.get("/api/v1/cart/", headers=headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert isinstance(data, list)
@@ -77,7 +77,7 @@ class TestCart:
         
         # First add an item
         cart_data = {"product_id": test_product.id, "quantity": 1}
-        client.post("/cart/add", json=cart_data, headers=headers)
+        client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         
         # Then update quantity
         update_data = {"quantity": 3}
@@ -92,7 +92,7 @@ class TestCart:
         
         # First add an item
         cart_data = {"product_id": test_product.id, "quantity": 1}
-        client.post("/cart/add", json=cart_data, headers=headers)
+        client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         
         # Then try to update to more than available stock
         update_data = {"quantity": test_product.stock + 1}
@@ -112,7 +112,7 @@ class TestCart:
         
         # First add an item
         cart_data = {"product_id": test_product.id, "quantity": 1}
-        client.post("/cart/add", json=cart_data, headers=headers)
+        client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         
         # Then remove it
         response = client.delete(f"/cart/{test_product.id}", headers=headers)
@@ -130,13 +130,13 @@ class TestCart:
         
         # First add an item
         cart_data = {"product_id": test_product.id, "quantity": 1}
-        client.post("/cart/add", json=cart_data, headers=headers)
+        client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         
         # Then clear cart
-        response = client.delete("/cart/", headers=headers)
+        response = client.delete("/api/v1/cart/", headers=headers)
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
     def test_cart_unauthorized(self, client: TestClient):
         """Test cart access without authentication"""
-        response = client.get("/cart/")
+        response = client.get("/api/v1/cart/")
         assert response.status_code == status.HTTP_403_FORBIDDEN
