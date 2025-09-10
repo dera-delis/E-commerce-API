@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)](https://www.postgresql.org/)
-[![Tests](https://img.shields.io/badge/Tests-81%2F81%20passed-brightgreen.svg)](https://pytest.org/)
+[![Tests](https://github.com/dera-delis/E-commerce-API/workflows/CI%2FCD%20Pipeline/badge.svg)](https://github.com/dera-delis/E-commerce-API/actions)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 
@@ -95,9 +95,13 @@ ecommerce-api/
 │   ├── seed_data.py     # Sample data seeding
 │   └── startup.py       # Application startup
 ├── alembic/             # Database migrations
+├── .github/             # GitHub Actions CI/CD
+│   └── workflows/
+│       └── ci.yml       # Automated testing pipeline
 ├── requirements.txt     # Python dependencies
 ├── docker-compose.yml   # Docker services
 ├── Dockerfile.prod      # Production container
+├── database_schema.dbml # Database schema diagram (dbdiagram.io)
 ├── env.example          # Environment variables template
 ├── pytest.ini          # Test configuration
 ├── Makefile            # Development commands
@@ -119,6 +123,15 @@ ecommerce-api/
 ![Database Schema](screenshots/database-schema.png)
 
 *Comprehensive database design with optimized relationships and performance indexes. The schema includes 6 core tables with proper foreign key constraints and composite indexes for optimal query performance.*
+
+**Schema Features:**
+- 🏗️ **6 Core Tables**: Users, Categories, Products, Orders, Order Items, Cart
+- 🔗 **Optimized Relationships**: Proper foreign key constraints and cascading
+- ⚡ **Performance Indexes**: Composite indexes for common query patterns
+- 🔒 **Data Integrity**: Enums for status fields and proper constraints
+- 📊 **Scalable Design**: Supports high-volume e-commerce operations
+
+> **💡 Interactive Schema**: View the live database schema at [dbdiagram.io](https://dbdiagram.io) using the `database_schema.dbml` file in the repository.
 
 ### API Testing Workflow
 ![User Signup](screenshots/api-testing/user-signup.png)
