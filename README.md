@@ -22,12 +22,12 @@ A production-ready, high-performance E-commerce API backend built with FastAPI, 
 - **Performance Monitoring**: Real-time metrics, rate limiting, and GZip compression
 - **Security**: Input validation, SQL injection protection, and comprehensive error handling
 
-## 🚀 Live Demo (Coming Soon)
+## 🚀 Live Demo
 
-- **API Base URL**: https://your-api-demo.com  
-- **Swagger Docs**: https://your-api-demo.com/docs  
-- **ReDoc**: https://your-api-demo.com/redoc
-- **Health Check**: https://your-api-demo.com/health
+- **API Base URL**: https://ecommerce-api-op5q.onrender.com  
+- **Swagger Docs**: https://ecommerce-api-op5q.onrender.com/docs  
+- **ReDoc**: https://ecommerce-api-op5q.onrender.com/redoc
+- **Health Check**: https://ecommerce-api-op5q.onrender.com/health
 
 *Deployment scripts and production configuration included in the repository.*
 
@@ -220,7 +220,7 @@ ecommerce-api/
 ### 1. User Registration and Login
 
 ```bash
-# Register a new user
+# Register a new user (Local)
 curl -X POST "http://localhost:8000/auth/signup" \
   -H "Content-Type: application/json" \
   -d '{
@@ -229,8 +229,22 @@ curl -X POST "http://localhost:8000/auth/signup" \
     "password": "securepassword123"
   }'
 
-# Login
+# Register a new user (Live Demo)
+curl -X POST "https://ecommerce-api-op5q.onrender.com/auth/signup" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "securepassword123"
+  }'
+
+# Login (Local)
 curl -X POST "http://localhost:8000/auth/login" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=john_doe&password=securepassword123"
+
+# Login (Live Demo)
+curl -X POST "https://ecommerce-api-op5q.onrender.com/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=john_doe&password=securepassword123"
 ```
