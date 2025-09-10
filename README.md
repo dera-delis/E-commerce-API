@@ -28,6 +28,7 @@ A production-ready, high-performance E-commerce API backend built with FastAPI, 
 - **Order Management**: Checkout process, order tracking, and status updates
 - **Stock Management**: Automatic stock reduction on checkout
 - **API Documentation**: Auto-generated OpenAPI docs with Swagger UI
+- **API Versioning**: RESTful API with `/api/v1/` versioning for backward compatibility
 - **Performance Monitoring**: Real-time metrics, rate limiting, and GZip compression
 - **Security**: Input validation, SQL injection protection, and comprehensive error handling
 
@@ -182,7 +183,17 @@ ecommerce-api/
    docker-compose exec api alembic upgrade head
    ```
 
-5. **Access the API**
+5. **Seed the database with sample data** *(Optional but recommended)*
+   ```bash
+   docker-compose exec api python scripts/seed_data.py
+   ```
+   This creates sample data including:
+   - **Admin user**: `admin@example.com` / `admin123`
+   - **Test customer**: `customer@example.com` / `customer123`
+   - **Sample categories**: Electronics, Clothing, Books, Home & Garden
+   - **Sample products**: Various items across all categories
+
+6. **Access the API**
    - API: http://localhost:8000
    - Documentation: http://localhost:8000/docs
    - ReDoc: http://localhost:8000/redoc
@@ -214,7 +225,13 @@ ecommerce-api/
    alembic upgrade head
    ```
 
-5. **Start the application**
+5. **Seed the database with sample data** *(Optional but recommended)*
+   ```bash
+   python scripts/seed_data.py
+   ```
+   This creates sample users, categories, and products for easy testing.
+
+6. **Start the application**
    ```bash
    uvicorn app.main:app --reload
    ```
@@ -222,38 +239,38 @@ ecommerce-api/
 ## API Endpoints
 
 ### Authentication
-- `POST /auth/signup` - User registration
-- `POST /auth/login` - User login
-- `GET /auth/me` - Get current user info
+- `POST /api/v1/auth/signup` - User registration
+- `POST /api/v1/auth/login` - User login
+- `GET /api/v1/auth/me` - Get current user info
 
 ### Categories
-- `GET /categories/` - List all categories (public)
-- `GET /categories/{category_id}` - Get category by ID (public)
-- `POST /categories/` - Create category (admin only)
-- `PUT /categories/{category_id}` - Update category (admin only)
-- `DELETE /categories/{category_id}` - Delete category (admin only)
+- `GET /api/v1/categories/` - List all categories (public)
+- `GET /api/v1/categories/{category_id}` - Get category by ID (public)
+- `POST /api/v1/categories/` - Create category (admin only)
+- `PUT /api/v1/categories/{category_id}` - Update category (admin only)
+- `DELETE /api/v1/categories/{category_id}` - Delete category (admin only)
 
 ### Products
-- `GET /products/` - List all products (public)
-- `GET /products/{product_id}` - Get product by ID (public)
-- `GET /products/categories/{category_id}/products` - Get products by category (public)
-- `POST /products/` - Create product (admin only)
-- `PUT /products/{product_id}` - Update product (admin only)
-- `DELETE /products/{product_id}` - Delete product (admin only)
+- `GET /api/v1/products/` - List all products (public)
+- `GET /api/v1/products/{product_id}` - Get product by ID (public)
+- `GET /api/v1/products/categories/{category_id}/products` - Get products by category (public)
+- `POST /api/v1/products/` - Create product (admin only)
+- `PUT /api/v1/products/{product_id}` - Update product (admin only)
+- `DELETE /api/v1/products/{product_id}` - Delete product (admin only)
 
 ### Cart
-- `GET /cart/` - Get cart items (authenticated)
-- `POST /cart/add` - Add item to cart (authenticated)
-- `PUT /cart/{product_id}` - Update cart item quantity (authenticated)
-- `DELETE /cart/{product_id}` - Remove item from cart (authenticated)
-- `DELETE /cart/` - Clear cart (authenticated)
+- `GET /api/v1/cart/` - Get cart items (authenticated)
+- `POST /api/v1/cart/add` - Add item to cart (authenticated)
+- `PUT /api/v1/cart/{product_id}` - Update cart item quantity (authenticated)
+- `DELETE /api/v1/cart/{product_id}` - Remove item from cart (authenticated)
+- `DELETE /api/v1/cart/` - Clear cart (authenticated)
 
 ### Orders
-- `GET /orders/` - Get orders (customers see their own, admins see all)
-- `GET /orders/all` - Get all orders (admin only)
-- `GET /orders/{order_id}` - Get order by ID (owner or admin)
-- `POST /orders/checkout` - Checkout cart (customers only)
-- `PUT /orders/{order_id}/status` - Update order status (admin only)
+- `GET /api/v1/orders/` - Get orders (customers see their own, admins see all)
+- `GET /api/v1/orders/all` - Get all orders (admin only)
+- `GET /api/v1/orders/{order_id}` - Get order by ID (owner or admin)
+- `POST /api/v1/orders/checkout` - Checkout cart (customers only)
+- `PUT /api/v1/orders/{order_id}/status` - Update order status (admin only)
 
 ## Usage Examples
 
@@ -263,7 +280,7 @@ ecommerce-api/
 
 ```bash
 # Register a new user (Local Development)
-curl -X POST "http://localhost:8000/auth/signup" \
+curl -X POST "http://localhost:8000/api/v1/auth/signup" \
   -H "Content-Type: application/json" \
   -d '{
     "username": "john_doe",
@@ -272,7 +289,7 @@ curl -X POST "http://localhost:8000/auth/signup" \
   }'
 
 # Register a new user (Live Demo)
-curl -X POST "https://ecommerce-api-op5q.onrender.com/auth/signup" \
+curl -X POST "https://ecommerce-api-op5q.onrender.com/api/v1/auth/signup" \
   -H "Content-Type: application/json" \
   -d '{
     "username": "john_doe",
@@ -281,12 +298,12 @@ curl -X POST "https://ecommerce-api-op5q.onrender.com/auth/signup" \
   }'
 
 # Login (Local Development)
-curl -X POST "http://localhost:8000/auth/login" \
+curl -X POST "http://localhost:8000/api/v1/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=john_doe&password=securepassword123"
 
 # Login (Live Demo)
-curl -X POST "https://ecommerce-api-op5q.onrender.com/auth/login" \
+curl -X POST "https://ecommerce-api-op5q.onrender.com/api/v1/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=john_doe&password=securepassword123"
 ```
@@ -295,7 +312,7 @@ curl -X POST "https://ecommerce-api-op5q.onrender.com/auth/login" \
 
 ```bash
 # Create a category
-curl -X POST "http://localhost:8000/categories/" \
+curl -X POST "http://localhost:8000/api/v1/categories/" \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -304,7 +321,7 @@ curl -X POST "http://localhost:8000/categories/" \
   }'
 
 # Create a product
-curl -X POST "http://localhost:8000/products/" \
+curl -X POST "http://localhost:8000/api/v1/products/" \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -320,7 +337,7 @@ curl -X POST "http://localhost:8000/products/" \
 
 ```bash
 # Add item to cart
-curl -X POST "http://localhost:8000/cart/add" \
+curl -X POST "http://localhost:8000/api/v1/cart/add" \
   -H "Authorization: Bearer YOUR_USER_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -329,7 +346,7 @@ curl -X POST "http://localhost:8000/cart/add" \
   }'
 
 # View cart
-curl -X GET "http://localhost:8000/cart/" \
+curl -X GET "http://localhost:8000/api/v1/cart/" \
   -H "Authorization: Bearer YOUR_USER_TOKEN"
 ```
 
@@ -337,11 +354,11 @@ curl -X GET "http://localhost:8000/cart/" \
 
 ```bash
 # Checkout cart
-curl -X POST "http://localhost:8000/orders/checkout" \
+curl -X POST "http://localhost:8000/api/v1/orders/checkout" \
   -H "Authorization: Bearer YOUR_USER_TOKEN"
 
 # View orders
-curl -X GET "http://localhost:8000/orders/" \
+curl -X GET "http://localhost:8000/api/v1/orders/" \
   -H "Authorization: Bearer YOUR_USER_TOKEN"
 ```
 
