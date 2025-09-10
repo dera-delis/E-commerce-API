@@ -16,7 +16,7 @@ class TestProducts:
 
     def test_get_product_by_id_public(self, client: TestClient, db: Session, test_product: Product):
         """Test public access to individual product"""
-        response = client.get(f"/products/{test_product.id}")
+        response = client.get(f"/api/v1/products/{test_product.id}")
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["name"] == test_product.name
@@ -24,7 +24,7 @@ class TestProducts:
 
     def test_get_product_not_found(self, client: TestClient, db: Session):
         """Test getting non-existent product"""
-        response = client.get("/products/999")
+        response = client.get("/api/v1/products/999")
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_create_product_admin_success(self, client: TestClient, test_admin_token: str, test_category: Category):
@@ -101,7 +101,7 @@ class TestProducts:
             "name": "Updated Product",
             "price": 299.99
         }
-        response = client.put(f"/products/{test_product.id}", json=update_data, headers=headers)
+        response = client.put(f"/api/v1/products/{test_product.id}", json=update_data, headers=headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["name"] == update_data["name"]
@@ -111,37 +111,37 @@ class TestProducts:
         """Test customer cannot update product"""
         headers = {"Authorization": f"Bearer {test_user_token}"}
         update_data = {"name": "Customer Update"}
-        response = client.put(f"/products/{test_product.id}", json=update_data, headers=headers)
+        response = client.put(f"/api/v1/products/{test_product.id}", json=update_data, headers=headers)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_update_product_not_found(self, client: TestClient, test_admin_token: str):
         """Test updating non-existent product"""
         headers = {"Authorization": f"Bearer {test_admin_token}"}
         update_data = {"name": "Non-existent Update"}
-        response = client.put("/products/999", json=update_data, headers=headers)
+        response = client.put("/api/v1/products/999", json=update_data, headers=headers)
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_delete_product_admin_success(self, client: TestClient, test_admin_token: str, test_product: Product):
         """Test admin deleting product successfully"""
         headers = {"Authorization": f"Bearer {test_admin_token}"}
-        response = client.delete(f"/products/{test_product.id}", headers=headers)
+        response = client.delete(f"/api/v1/products/{test_product.id}", headers=headers)
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
     def test_delete_product_customer_forbidden(self, client: TestClient, test_user_token: str, test_product: Product):
         """Test customer cannot delete product"""
         headers = {"Authorization": f"Bearer {test_user_token}"}
-        response = client.delete(f"/products/{test_product.id}", headers=headers)
+        response = client.delete(f"/api/v1/products/{test_product.id}", headers=headers)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_delete_product_not_found(self, client: TestClient, test_admin_token: str):
         """Test deleting non-existent product"""
         headers = {"Authorization": f"Bearer {test_admin_token}"}
-        response = client.delete("/products/999", headers=headers)
+        response = client.delete("/api/v1/products/999", headers=headers)
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_get_products_by_category(self, client: TestClient, db: Session, test_category: Category):
         """Test getting products by category"""
-        response = client.get(f"/products/categories/{test_category.id}/products")
+        response = client.get(f"/api/v1/products/categories/{test_category.id}/products")
         assert response.status_code == status.HTTP_200_OK
         products = response.json()
         assert isinstance(products, list)

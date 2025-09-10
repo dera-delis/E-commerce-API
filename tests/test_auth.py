@@ -25,7 +25,7 @@ class TestAuth:
     def test_signup_duplicate_username(self, client: TestClient, db: Session):
         """Test signup with duplicate username"""
         # First signup
-        client.post("/auth/signup", json={
+        client.post("/api/v1/auth/signup", json={
             "username": "duplicate",
             "email": "first@example.com",
             "password": "password123"
@@ -42,7 +42,7 @@ class TestAuth:
     def test_signup_duplicate_email(self, client: TestClient, db: Session):
         """Test signup with duplicate email"""
         # First signup
-        client.post("/auth/signup", json={
+        client.post("/api/v1/auth/signup", json={
             "username": "first",
             "email": "duplicate@example.com",
             "password": "password123"
@@ -59,7 +59,7 @@ class TestAuth:
     def test_login_success(self, client: TestClient, db: Session):
         """Test successful login"""
         # First create a user
-        client.post("/auth/signup", json={
+        client.post("/api/v1/auth/signup", json={
             "username": "loginuser",
             "email": "login@example.com",
             "password": "password123"
@@ -86,7 +86,7 @@ class TestAuth:
     def test_login_invalid_password(self, client: TestClient, db: Session):
         """Test login with invalid password"""
         # First create a user
-        client.post("/auth/signup", json={
+        client.post("/api/v1/auth/signup", json={
             "username": "passworduser",
             "email": "password@example.com",
             "password": "password123"
@@ -116,5 +116,5 @@ class TestAuth:
 
     def test_get_current_user_no_token(self, client: TestClient):
         """Test getting current user without token"""
-        response = client.get("/auth/me")
+        response = client.get("/api/v1/auth/me")
         assert response.status_code == status.HTTP_403_FORBIDDEN

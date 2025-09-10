@@ -35,7 +35,7 @@ class TestPerformance:
     def test_gzip_compression(self, client: TestClient):
         """Test GZip compression middleware"""
         # Test with a larger response that should trigger compression
-        response = client.get("/products/?limit=1000")
+        response = client.get("/api/v1/products/?limit=1000")
         # Note: GZip compression only applies to responses > 1000 bytes
         # Small responses might not be compressed
         assert response.status_code == 200, "Response should be successful"
@@ -59,23 +59,23 @@ class TestPerformance:
     def test_product_search_performance(self, client: TestClient, db: Session):
         """Test product search with various filters"""
         # Test search by name
-        response = client.get("/products/?search=laptop")
+        response = client.get("/api/v1/products/?search=laptop")
         assert response.status_code == 200
         
         # Test price filtering
-        response = client.get("/products/?min_price=100&max_price=1000")
+        response = client.get("/api/v1/products/?min_price=100&max_price=1000")
         assert response.status_code == 200
         
         # Test stock filtering
-        response = client.get("/products/?in_stock=true")
+        response = client.get("/api/v1/products/?in_stock=true")
         assert response.status_code == 200
         
         # Test category filtering
-        response = client.get("/products/?category_id=1")
+        response = client.get("/api/v1/products/?category_id=1")
         assert response.status_code == 200
         
         # Test pagination
-        response = client.get("/products/?skip=0&limit=5")
+        response = client.get("/api/v1/products/?skip=0&limit=5")
         assert response.status_code == 200
         products = response.json()
         assert len(products) <= 5
@@ -100,7 +100,7 @@ class TestPerformance:
         db.commit()
         
         # Test pagination performance
-        response = client.get("/products/?skip=0&limit=100")
+        response = client.get("/api/v1/products/?skip=0&limit=100")
         assert response.status_code == 200
         products = response.json()
         assert len(products) <= 100

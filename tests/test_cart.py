@@ -81,7 +81,7 @@ class TestCart:
         
         # Then update quantity
         update_data = {"quantity": 3}
-        response = client.put(f"/cart/{test_product.id}", json=update_data, headers=headers)
+        response = client.put(f"/api/v1/cart/{test_product.id}", json=update_data, headers=headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["quantity"] == 3
@@ -96,14 +96,14 @@ class TestCart:
         
         # Then try to update to more than available stock
         update_data = {"quantity": test_product.stock + 1}
-        response = client.put(f"/cart/{test_product.id}", json=update_data, headers=headers)
+        response = client.put(f"/api/v1/cart/{test_product.id}", json=update_data, headers=headers)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_update_cart_item_not_found(self, client: TestClient, test_user_token: str, test_product: Product):
         """Test updating non-existent cart item"""
         headers = {"Authorization": f"Bearer {test_user_token}"}
         update_data = {"quantity": 2}
-        response = client.put(f"/cart/{test_product.id}", json=update_data, headers=headers)
+        response = client.put(f"/api/v1/cart/{test_product.id}", json=update_data, headers=headers)
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_remove_from_cart(self, client: TestClient, test_user_token: str, test_product: Product):
@@ -115,13 +115,13 @@ class TestCart:
         client.post("/api/v1/cart/add", json=cart_data, headers=headers)
         
         # Then remove it
-        response = client.delete(f"/cart/{test_product.id}", headers=headers)
+        response = client.delete(f"/api/v1/cart/{test_product.id}", headers=headers)
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
     def test_remove_from_cart_not_found(self, client: TestClient, test_user_token: str, test_product: Product):
         """Test removing non-existent cart item"""
         headers = {"Authorization": f"Bearer {test_user_token}"}
-        response = client.delete(f"/cart/{test_product.id}", headers=headers)
+        response = client.delete(f"/api/v1/cart/{test_product.id}", headers=headers)
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
     def test_clear_cart(self, client: TestClient, test_user_token: str, test_product: Product):
