@@ -55,6 +55,7 @@ ecommerce-api/
 │   ├── auth.py          # JWT authentication logic
 │   ├── crud.py          # Database operations
 │   ├── dependencies.py  # Reusable dependencies
+│   ├── monitoring.py    # Performance monitoring
 │   └── routers/         # API route handlers
 │       ├── auth.py      # Authentication endpoints
 │       ├── categories.py # Category management
@@ -67,15 +68,21 @@ ecommerce-api/
 │   ├── redoc.png        # Alternative API documentation
 │   ├── docker-containers.png # Container deployment
 │   ├── database-schema.png   # Database structure
-│   ├── api-testing/     # API testing workflow
-│   │   ├── user-signup.png      # User registration
-│   │   ├── adding-product-to-cart.png # Cart operations
-│   │   └── checkout-order.png   # Order completion
-│   └── pytest.png            # Test suite execution
+│   └── api-testing/     # API testing workflow
+│       ├── user-signup.png      # User registration
+│       ├── adding-product-to-cart.png # Cart operations
+│       └── checkout-order.png   # Order completion
+├── scripts/             # Utility scripts
+│   ├── init_db.py       # Database initialization
+│   ├── seed_data.py     # Sample data seeding
+│   └── startup.py       # Application startup
 ├── alembic/             # Database migrations
 ├── requirements.txt     # Python dependencies
 ├── docker-compose.yml   # Docker services
-├── Dockerfile          # API container
+├── Dockerfile.prod      # Production container
+├── env.example          # Environment variables template
+├── pytest.ini          # Test configuration
+├── Makefile            # Development commands
 └── README.md           # This file
 ```
 
@@ -121,7 +128,7 @@ ecommerce-api/
 
 2. **Create environment file**
    ```bash
-   cp .env.example .env
+   cp env.example .env
    # Edit .env with your configuration
    ```
 
@@ -175,36 +182,38 @@ ecommerce-api/
 ## API Endpoints
 
 ### Authentication
-- `POST /api/v1/auth/signup` - User registration
-- `POST /api/v1/auth/login` - User login
-- `GET /api/v1/auth/me` - Get current user info
+- `POST /auth/signup` - User registration
+- `POST /auth/login` - User login
+- `GET /auth/me` - Get current user info
 
 ### Categories
-- `GET /api/v1/categories/` - List all categories (public)
-- `GET /api/v1/categories/{id}` - Get category by ID (public)
-- `POST /api/v1/categories/` - Create category (admin only)
-- `PUT /api/v1/categories/{id}` - Update category (admin only)
-- `DELETE /api/v1/categories/{id}` - Delete category (admin only)
+- `GET /categories/` - List all categories (public)
+- `GET /categories/{category_id}` - Get category by ID (public)
+- `POST /categories/` - Create category (admin only)
+- `PUT /categories/{category_id}` - Update category (admin only)
+- `DELETE /categories/{category_id}` - Delete category (admin only)
 
 ### Products
-- `GET /api/v1/products/` - List all products (public)
-- `GET /api/v1/products/{id}` - Get product by ID (public)
-- `POST /api/v1/products/` - Create product (admin only)
-- `PUT /api/v1/products/{id}` - Update product (admin only)
-- `DELETE /api/v1/products/{id}` - Delete product (admin only)
+- `GET /products/` - List all products (public)
+- `GET /products/{product_id}` - Get product by ID (public)
+- `GET /products/categories/{category_id}/products` - Get products by category (public)
+- `POST /products/` - Create product (admin only)
+- `PUT /products/{product_id}` - Update product (admin only)
+- `DELETE /products/{product_id}` - Delete product (admin only)
 
 ### Cart
-- `GET /api/v1/cart/` - Get cart items (authenticated)
-- `POST /api/v1/cart/add` - Add item to cart (authenticated)
-- `PUT /api/v1/cart/{product_id}` - Update cart item quantity (authenticated)
-- `DELETE /api/v1/cart/{product_id}` - Remove item from cart (authenticated)
-- `DELETE /api/v1/cart/` - Clear cart (authenticated)
+- `GET /cart/` - Get cart items (authenticated)
+- `POST /cart/add` - Add item to cart (authenticated)
+- `PUT /cart/{product_id}` - Update cart item quantity (authenticated)
+- `DELETE /cart/{product_id}` - Remove item from cart (authenticated)
+- `DELETE /cart/` - Clear cart (authenticated)
 
 ### Orders
-- `GET /api/v1/orders/` - Get orders (customers see their own, admins see all)
-- `GET /api/v1/orders/{id}` - Get order by ID (owner or admin)
-- `POST /api/v1/orders/checkout` - Checkout cart (customers only)
-- `PUT /api/v1/orders/{id}/status` - Update order status (admin only)
+- `GET /orders/` - Get orders (customers see their own, admins see all)
+- `GET /orders/all` - Get all orders (admin only)
+- `GET /orders/{order_id}` - Get order by ID (owner or admin)
+- `POST /orders/checkout` - Checkout cart (customers only)
+- `PUT /orders/{order_id}/status` - Update order status (admin only)
 
 ## Usage Examples
 
@@ -212,7 +221,7 @@ ecommerce-api/
 
 ```bash
 # Register a new user
-curl -X POST "http://localhost:8000/api/v1/auth/signup" \
+curl -X POST "http://localhost:8000/auth/signup" \
   -H "Content-Type: application/json" \
   -d '{
     "username": "john_doe",
@@ -221,7 +230,7 @@ curl -X POST "http://localhost:8000/api/v1/auth/signup" \
   }'
 
 # Login
-curl -X POST "http://localhost:8000/api/v1/auth/login" \
+curl -X POST "http://localhost:8000/auth/login" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "username=john_doe&password=securepassword123"
 ```
@@ -230,7 +239,7 @@ curl -X POST "http://localhost:8000/api/v1/auth/login" \
 
 ```bash
 # Create a category
-curl -X POST "http://localhost:8000/api/v1/categories/" \
+curl -X POST "http://localhost:8000/categories/" \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -239,7 +248,7 @@ curl -X POST "http://localhost:8000/api/v1/categories/" \
   }'
 
 # Create a product
-curl -X POST "http://localhost:8000/api/v1/products/" \
+curl -X POST "http://localhost:8000/products/" \
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -255,7 +264,7 @@ curl -X POST "http://localhost:8000/api/v1/products/" \
 
 ```bash
 # Add item to cart
-curl -X POST "http://localhost:8000/api/v1/cart/add" \
+curl -X POST "http://localhost:8000/cart/add" \
   -H "Authorization: Bearer YOUR_USER_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -264,7 +273,7 @@ curl -X POST "http://localhost:8000/api/v1/cart/add" \
   }'
 
 # View cart
-curl -X GET "http://localhost:8000/api/v1/cart/" \
+curl -X GET "http://localhost:8000/cart/" \
   -H "Authorization: Bearer YOUR_USER_TOKEN"
 ```
 
@@ -272,11 +281,11 @@ curl -X GET "http://localhost:8000/api/v1/cart/" \
 
 ```bash
 # Checkout cart
-curl -X POST "http://localhost:8000/api/v1/orders/checkout" \
+curl -X POST "http://localhost:8000/orders/checkout" \
   -H "Authorization: Bearer YOUR_USER_TOKEN"
 
 # View orders
-curl -X GET "http://localhost:8000/api/v1/orders/" \
+curl -X GET "http://localhost:8000/orders/" \
   -H "Authorization: Bearer YOUR_USER_TOKEN"
 ```
 
