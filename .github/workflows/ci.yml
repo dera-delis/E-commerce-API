@@ -45,17 +45,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Set up test environment
+    - name: Wait for database
       run: |
-        export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/ecommerce_test"
-        export SECRET_KEY="test-secret-key-for-ci"
-        export DEBUG="true"
+        sleep 10
+        pg_isready -h localhost -p 5432 -U postgres
     
     - name: Run database migrations
       run: |
-        export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/ecommerce_test"
-        export SECRET_KEY="test-secret-key-for-ci"
-        export DEBUG="true"
         alembic upgrade head
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
@@ -64,10 +60,7 @@ jobs:
     
     - name: Run tests
       run: |
-        export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/ecommerce_test"
-        export SECRET_KEY="test-secret-key-for-ci"
-        export DEBUG="true"
-        pytest -v --tb=short
+        python -m pytest -v --tb=short
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ecommerce_test
         SECRET_KEY: test-secret-key-for-ci
