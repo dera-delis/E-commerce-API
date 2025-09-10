@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)](https://www.postgresql.org/)
-[![Tests](https://img.shields.io/badge/Tests-80%2F80%20passed-brightgreen.svg)](https://pytest.org/)
+[![Tests](https://img.shields.io/badge/Tests-81%2F81%20passed-brightgreen.svg)](https://pytest.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 
@@ -15,6 +15,13 @@ A production-ready, high-performance E-commerce API backend built with FastAPI, 
 
 - **Authentication & Authorization**: JWT-based authentication with role-based access control (admin/customer)
 - **User Management**: User registration, login, and profile management
+
+### 🔐 Role-Based Access Control (RBAC)
+
+| Role | Permissions |
+|------|-------------|
+| **Customer** | • Add items to cart<br>• Update cart quantities<br>• Remove items from cart<br>• Clear entire cart<br>• Checkout cart to create orders<br>• View own orders only<br>• View products and categories |
+| **Admin** | • All customer permissions<br>• Create, update, delete products<br>• Create, update, delete categories<br>• View all orders from all users<br>• Update order status<br>• Manage user accounts |
 - **Product Management**: CRUD operations for products with category support
 - **Category Management**: Product categorization system
 - **Shopping Cart**: Add, update, remove, and clear cart items
@@ -111,6 +118,8 @@ ecommerce-api/
 ### Database Schema
 ![Database Schema](screenshots/database-schema.png)
 
+*Comprehensive database design with optimized relationships and performance indexes. The schema includes 6 core tables with proper foreign key constraints and composite indexes for optimal query performance.*
+
 ### API Testing Workflow
 ![User Signup](screenshots/api-testing/user-signup.png)
 ![Adding Product to Cart](screenshots/api-testing/adding-product-to-cart.png)
@@ -118,6 +127,13 @@ ecommerce-api/
 
 ### Test Suite Execution
 ![Test Suite](screenshots/pytest.png)
+
+**Test Results:**
+- ✅ **81/81 tests passed** (100% success rate)
+- 🚀 **Comprehensive coverage** including authentication, cart operations, orders, and edge cases
+- 🔒 **Security testing** with SQL injection and XSS protection validation
+- ⚡ **Performance testing** with rate limiting and concurrent request handling
+- 🛡️ **Edge case testing** with malformed inputs and boundary conditions
 
 *Note: Screenshots demonstrate the complete API workflow from user registration to order completion.*
 

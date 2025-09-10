@@ -1,0 +1,109 @@
+// E-commerce API Database Schema
+// Generated for portfolio documentation
+
+Table users {
+  id integer [primary key, increment]
+  username varchar(50) [unique, not null]
+  email varchar(100) [unique, not null]
+  hashed_password varchar(255) [not null]
+  role user_role [default: 'customer', not null]
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    username
+    email
+    role
+    created_at
+    (role, created_at)
+  }
+}
+
+Table categories {
+  id integer [primary key, increment]
+  name varchar(100) [unique, not null]
+  description text
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    name
+    created_at
+  }
+}
+
+Table products {
+  id integer [primary key, increment]
+  name varchar(200) [not null]
+  description text
+  price decimal [not null]
+  stock integer [default: 0, not null]
+  category_id integer [ref: > categories.id, not null]
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    name
+    price
+    stock
+    category_id
+    (category_id, price)
+    (stock, price)
+    (name, category_id)
+  }
+}
+
+Table orders {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id, not null]
+  total_price decimal [not null]
+  status order_status [default: 'pending', not null]
+  created_at timestamp [default: `now()`]
+  
+  indexes {
+    user_id
+    total_price
+    status
+    created_at
+    (user_id, status)
+    (status, created_at)
+    (user_id, created_at)
+  }
+}
+
+Table order_items {
+  id integer [primary key, increment]
+  order_id integer [ref: > orders.id, not null]
+  product_id integer [ref: > products.id, not null]
+  quantity integer [not null]
+  price decimal [not null] // Price at time of order
+  
+  indexes {
+    order_id
+    product_id
+    price
+    (order_id, product_id)
+  }
+}
+
+Table cart {
+  id integer [primary key, increment]
+  user_id integer [ref: > users.id, not null]
+  product_id integer [ref: > products.id, not null]
+  quantity integer [default: 1, not null]
+  
+  indexes {
+    user_id
+    product_id
+    (user_id, product_id)
+  }
+}
+
+Enum user_role {
+  admin
+  customer
+}
+
+Enum order_status {
+  pending
+  paid
+  shipped
+  delivered
+}
