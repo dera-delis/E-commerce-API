@@ -134,7 +134,7 @@ class TestOrders:
         order_id = checkout_response.json()["id"]
         
         # Get order by ID
-        response = client.get(f"/orders/{order_id}", headers=headers)
+        response = client.get(f"/api/v1/orders/{order_id}", headers=headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["id"] == order_id
@@ -150,7 +150,7 @@ class TestOrders:
         
         # Admin gets the order
         admin_headers = {"Authorization": f"Bearer {test_admin_token}"}
-        response = client.get(f"/orders/{order_id}", headers=admin_headers)
+        response = client.get(f"/api/v1/orders/{order_id}", headers=admin_headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["id"] == order_id
@@ -166,7 +166,7 @@ class TestOrders:
         order_id = checkout_response.json()["id"]
         
         # Try to get order without token
-        response = client.get(f"/orders/{order_id}")
+        response = client.get(f"/api/v1/orders/{order_id}")
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_update_order_status_admin(self, client: TestClient, test_admin_token: str, test_user_token: str, test_product: Product):
@@ -181,7 +181,7 @@ class TestOrders:
         # Admin updates status
         admin_headers = {"Authorization": f"Bearer {test_admin_token}"}
         update_data = {"status": "shipped"}
-        response = client.put(f"/orders/{order_id}/status", json=update_data, headers=admin_headers)
+        response = client.put(f"/api/v1/orders/{order_id}/status", json=update_data, headers=admin_headers)
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
         assert data["status"] == "shipped"
@@ -198,7 +198,7 @@ class TestOrders:
         
         # Try to update status
         update_data = {"status": "shipped"}
-        response = client.put(f"/orders/{order_id}/status", json=update_data, headers=headers)
+        response = client.put(f"/api/v1/orders/{order_id}/status", json=update_data, headers=headers)
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_update_order_status_not_found(self, client: TestClient, test_admin_token: str):

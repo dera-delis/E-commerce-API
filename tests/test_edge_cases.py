@@ -168,7 +168,7 @@ class TestEdgeCases:
         """Test API behavior with potential SQL injection attempts"""
         sql_injection = "'; DROP TABLE users; --"
         
-        response = client.get(f"/products/?search={sql_injection}")
+        response = client.get(f"/api/v1/products/?search={sql_injection}")
         
         # Should handle gracefully, not crash
         assert response.status_code == 200
