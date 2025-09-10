@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.exc import SQLAlchemyError
 import logging
@@ -26,7 +26,7 @@ try:
     
     # Test the connection
     with engine.connect() as conn:
-        conn.execute("SELECT 1")
+        conn.execute(text("SELECT 1"))
         logger.info("Database connection established successfully")
         
 except SQLAlchemyError as e:
@@ -82,7 +82,7 @@ def check_db_connection():
     try:
         if engine:
             with engine.connect() as conn:
-                conn.execute("SELECT 1")
+                conn.execute(text("SELECT 1"))
             return True
         return False
     except Exception as e:
